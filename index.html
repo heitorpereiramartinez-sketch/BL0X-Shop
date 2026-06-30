@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>BLOX Shop - Loja Oficial</title>
+    <style>
+        body { font-family: sans-serif; background: #1a1a1a; color: white; margin: 0; text-align: center; }
+        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding: 20px; }
+        .card { background: #2a2a2a; padding: 15px; border-radius: 10px; }
+        img { width: 100%; height: 150px; object-fit: contain; }
+        button { background: #00d26a; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>BLOX Shop</h1>
+    <div class="vitrine" id="vitrine-cliente"></div>
+    <script>
+        function renderizarVitrine() {
+            let itens = JSON.parse(localStorage.getItem('itensLoja') || '[]');
+            let div = document.getElementById('vitrine-cliente');
+            div.innerHTML = itens.map(i => `
+                <div class="card">
+                    <img src="${i.imagem}">
+                    <h3>${i.nome}</h3>
+                    <p>R$ ${i.preco}</p>
+                    <button onclick="comprar('${i.nome}')">Comprar</button>
+                </div>
+            `).join('');
+        }
+        function comprar(nome) {
+            alert("Redirecionando para o Discord para finalizar a compra de: " + nome);
+            window.location.href = "SEU_LINK_DO_DISCORD_AQUI";
+        }
+        renderizarVitrine();
+    </script>
+</body>
+</html>
