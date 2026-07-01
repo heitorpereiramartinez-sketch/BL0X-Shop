@@ -2,23 +2,32 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>BL0X Admin</title>
+    <title>Admin - BLOX Shop</title>
     <style>
-        body { background: #121212; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 50px; }
-        input { padding: 12px; margin: 10px; width: 300px; border-radius: 8px; border: 1px solid #333; background: #1e1e1e; color: white; }
-        button { padding: 12px 30px; background: #7289da; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #5b6eae; }
+        body { background: #121212; color: white; font-family: sans-serif; padding: 20px; text-align: center; }
+        .box { background: #1a1a1a; padding: 20px; border-radius: 10px; display: inline-block; }
+        input, select, button { padding: 10px; margin: 5px; border-radius: 5px; border: none; }
+        .item { background: #222; padding: 10px; margin: 10px auto; width: 320px; display: flex; justify-content: space-between; border-radius: 5px; }
     </style>
 </head>
 <body>
-    <h1>Adicionar Item</h1>
-    <input type="text" id="nome" placeholder="Nome do Item"><br>
-    <input type="text" id="preco" placeholder="Preço (ex: 50.00)"><br>
-    <button onclick="salvar()">Adicionar à Loja</button>
+    <h1>Painel de Admin</h1>
+    <div class="box">
+        <select id="jogo">
+            <option value="gag2">Grow a Garden 2</option>
+            <option value="outro">Outro Jogo</option>
+        </select>
+        <input id="nome" placeholder="Nome do Item">
+        <input id="preco" placeholder="Preço">
+        <button onclick="salvar()">Adicionar</button>
+    </div>
+
+    <h3>Itens Cadastrados:</h3>
+    <div id="lista"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBxFR4sBBzGCKzJMNdfOMF4BIzq3rttcys",
@@ -29,20 +38,31 @@
             messagingSenderId: "295840974718",
             appId: "1:295840974718:web:36af692d4d19bc4134552f"
         };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        const db = getDatabase(initializeApp(firebaseConfig));
 
         window.salvar = () => {
+            const jogo = document.getElementById('jogo').value;
             const nome = document.getElementById('nome').value;
             const preco = document.getElementById('preco').value;
             if(nome && preco) {
-                push(ref(db, 'produtos/'), { nome, preco });
-                alert("Produto enviado com sucesso!");
-                document.getElementById('nome').value = "";
-                document.getElementById('preco').value = "";
+                push(ref(db, 'produtos/' + jogo + '/'), { nome, preco });
+                alert("Salvo em " + jogo);
             }
         };
+
+        window.remover = (jogo, id) => { remove(ref(db, 'produtos/' + jogo + '/' + id)); };
+
+        onValue(ref(db, 'produtos/'), (snap) => {
+            const data = snap.val();
+            const div = document.getElementById('lista');
+            div.innerHTML = "";
+            for(let jogo in data) {
+                for(let id in data[jogo]) {
+                    div.innerHTML += `<div class="item"><b>[${jogo}]</b> ${data[jogo][id].nome} - R$ ${data[jogo][id].preco} 
+                    <button onclick="remover('${jogo}', '${id}')">Excluir</button></div>`;
+                }
+            }
+        });
     </script>
 </body>
 </html>
