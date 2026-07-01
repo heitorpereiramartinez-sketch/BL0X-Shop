@@ -2,23 +2,24 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>BL0X Admin</title>
+    <title>BLOX Admin</title>
     <style>
         body { background: #121212; color: white; font-family: sans-serif; padding: 20px; text-align: center; }
-        .container { background: #1a1a1a; padding: 20px; border-radius: 10px; display: inline-block; }
-        input, button { padding: 10px; margin: 5px; border-radius: 5px; border: none; }
-        .item { background: #222; padding: 10px; margin: 10px auto; width: 350px; display: flex; justify-content: space-between; border-radius: 5px; align-items: center; }
+        .box { background: #1a1a1a; padding: 20px; border-radius: 10px; display: inline-block; }
+        input, button { padding: 10px; margin: 5px; border-radius: 5px; border: none; width: 250px; }
+        .item { background: #222; padding: 10px; margin: 10px auto; width: 400px; display: flex; justify-content: space-between; border-radius: 5px; align-items: center; }
     </style>
 </head>
 <body>
     <h1>Administração</h1>
-    <div class="container">
-        <input id="nome" placeholder="Nome do Item">
-        <input id="preco" placeholder="Preço">
-        <button onclick="salvar()">Adicionar Produto</button>
+    <div class="box">
+        <input id="nome" placeholder="Nome do Item"><br>
+        <input id="preco" placeholder="Preço"><br>
+        <input id="foto" placeholder="Link da Foto"><br>
+        <button onclick="salvar()">Adicionar à Loja</button>
     </div>
 
-    <h3>Itens</h3>
+    <h3>Itens Cadastrados:</h3>
     <div id="lista"></div>
 
     <script type="module">
@@ -34,16 +35,15 @@
             messagingSenderId: "295840974718",
             appId: "1:295840974718:web:36af692d4d19bc4134552f"
         };
-        
         const db = getDatabase(initializeApp(firebaseConfig));
 
         window.salvar = () => {
             const nome = document.getElementById('nome').value;
             const preco = document.getElementById('preco').value;
-            if(nome && preco) {
-                push(ref(db, 'produtos/roblox/'), { nome, preco });
-                document.getElementById('nome').value = "";
-                document.getElementById('preco').value = "";
+            const foto = document.getElementById('foto').value;
+            if(nome && preco && foto) {
+                push(ref(db, 'produtos/roblox/'), { nome, preco, foto });
+                alert("Item adicionado!");
             }
         };
 
@@ -54,11 +54,7 @@
             const div = document.getElementById('lista');
             div.innerHTML = "";
             for(let id in data) {
-                div.innerHTML += `
-                    <div class="item">
-                        ${data[id].nome} - R$ ${data[id].preco} 
-                        <button onclick="remover('${id}')">Excluir</button>
-                    </div>`;
+                div.innerHTML += `<div class="item">${data[id].nome} <button onclick="remover('${id}')">Excluir</button></div>`;
             }
         });
     </script>
