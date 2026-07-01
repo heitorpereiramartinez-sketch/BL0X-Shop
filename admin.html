@@ -5,23 +5,20 @@
     <title>BL0X Admin</title>
     <style>
         body { background: #121212; color: white; font-family: sans-serif; padding: 20px; text-align: center; }
-        .box { background: #1a1a1a; padding: 20px; border-radius: 10px; display: inline-block; }
-        input, select, button { padding: 10px; margin: 5px; border-radius: 5px; border: none; }
-        .item { background: #222; padding: 10px; margin: 10px auto; width: 320px; display: flex; justify-content: space-between; border-radius: 5px; }
+        .container { background: #1a1a1a; padding: 20px; border-radius: 10px; display: inline-block; }
+        input, button { padding: 10px; margin: 5px; border-radius: 5px; border: none; }
+        .item { background: #222; padding: 10px; margin: 10px auto; width: 350px; display: flex; justify-content: space-between; border-radius: 5px; align-items: center; }
     </style>
 </head>
 <body>
-    <h1>Painel de Admin</h1>
-    <div class="box">
-        <select id="jogo">
-            <option value="gag2">Grow a Garden 2</option>
-        </select>
+    <h1>Administração</h1>
+    <div class="container">
         <input id="nome" placeholder="Nome do Item">
         <input id="preco" placeholder="Preço">
-        <button onclick="salvar()">Adicionar</button>
+        <button onclick="salvar()">Adicionar Produto</button>
     </div>
 
-    <h3>Itens Cadastrados:</h3>
+    <h3>Itens</h3>
     <div id="lista"></div>
 
     <script type="module">
@@ -37,29 +34,31 @@
             messagingSenderId: "295840974718",
             appId: "1:295840974718:web:36af692d4d19bc4134552f"
         };
+        
         const db = getDatabase(initializeApp(firebaseConfig));
 
         window.salvar = () => {
-            const jogo = document.getElementById('jogo').value;
             const nome = document.getElementById('nome').value;
             const preco = document.getElementById('preco').value;
             if(nome && preco) {
-                push(ref(db, 'produtos/' + jogo + '/'), { nome, preco });
-                alert("Salvo em " + jogo);
+                push(ref(db, 'produtos/roblox/'), { nome, preco });
+                document.getElementById('nome').value = "";
+                document.getElementById('preco').value = "";
             }
         };
 
-        window.remover = (jogo, id) => { remove(ref(db, 'produtos/' + jogo + '/' + id)); };
+        window.remover = (id) => { remove(ref(db, 'produtos/roblox/' + id)); };
 
-        onValue(ref(db, 'produtos/'), (snap) => {
+        onValue(ref(db, 'produtos/roblox/'), (snap) => {
             const data = snap.val();
             const div = document.getElementById('lista');
             div.innerHTML = "";
-            for(let jogo in data) {
-                for(let id in data[jogo]) {
-                    div.innerHTML += `<div class="item"><b>[${jogo}]</b> ${data[jogo][id].nome} - R$ ${data[jogo][id].preco} 
-                    <button onclick="remover('${jogo}', '${id}')">Excluir</button></div>`;
-                }
+            for(let id in data) {
+                div.innerHTML += `
+                    <div class="item">
+                        ${data[id].nome} - R$ ${data[id].preco} 
+                        <button onclick="remover('${id}')">Excluir</button>
+                    </div>`;
             }
         });
     </script>
