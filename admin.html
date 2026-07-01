@@ -4,22 +4,57 @@
     <meta charset="UTF-8">
     <title>BL0X Admin</title>
     <style>
-        body { background: #0f0f0f; color: white; font-family: sans-serif; padding: 20px; }
-        .box { background: #1a1a1a; padding: 20px; border-radius: 15px; max-width: 400px; margin: 0 auto; }
-        input, select, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: none; }
-        button { background: #4a90e2; color: white; cursor: pointer; }
-        .item-list { background: #222; padding: 10px; margin: 10px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+        body { background: repeating-linear-gradient(45deg, #2a2a2a, #2a2a2a 40px, #1e1e1e 40px, #1e1e1e 80px); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; min-height: 100vh; }
+        
+        #password-gate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111; display: flex; justify-content: center; align-items: center; z-index: 999; flex-direction: column; }
+        .gate-box { background: #222; padding: 40px; border-radius: 20px; border: 4px solid #000; text-align: center; }
+        
+        .hidden { display: none !important; }
+        #admin-panel { max-width: 800px; margin: 0 auto; }
+        
+        h1, h2 { font-family: 'Arial Black', sans-serif; text-transform: uppercase; text-align: center; text-shadow: 2px 2px 0 #000; }
+        .box { background: #111; padding: 30px; border-radius: 20px; border: 4px solid #000; margin-bottom: 30px; box-shadow: 0 10px 0px rgba(0,0,0,0.8); }
+        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 3px solid #000; box-sizing: border-box; font-weight: bold; }
+        input, select { background: #222; color: white; }
+        button { background: #fff; color: #000; font-family: 'Arial Black', sans-serif; text-transform: uppercase; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 0px #000; }
+        button:hover { transform: translateY(2px); box-shadow: 0 2px 0px #000; }
+        
+        .item-list { background: #222; padding: 15px; margin: 10px 0; border-radius: 12px; border: 2px solid #000; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .btn-del { background: #e74c3c; color: white; width: auto; padding: 10px 20px; margin: 0; }
     </style>
 </head>
 <body>
-    <h2 style="text-align:center">BL0X Admin</h2>
-    <div class="box">
-        <select id="jogo"><option value="gag2">GAG 2</option><option value="roblox">Roblox</option></select>
-        <input id="nome" placeholder="Nome do Item"><input id="preco" placeholder="Preço">
-        <input id="foto" placeholder="Link da Imagem"><select id="status"><option value="disponivel">Disponível</option><option value="esgotado">Esgotado</option></select>
-        <button onclick="salvar()">Adicionar Produto</button>
+
+    <div id="password-gate">
+        <img src="./1001914985.png" width="200" style="margin-bottom: 20px;">
+        <div class="gate-box">
+            <h2>Acesso Restrito</h2>
+            <input type="password" id="admin-pass" placeholder="Senha do Admin">
+            <button onclick="verificar()">Desbloquear Painel</button>
+        </div>
     </div>
-    <div id="lista" style="max-width: 500px; margin: 20px auto;"></div>
+
+    <div id="admin-panel" class="hidden">
+        <h1>BL0X Admin</h1>
+        <div class="box">
+            <h2>Adicionar Item</h2>
+            <select id="jogo">
+                <option value="gag2">Grow a Garden 2</option>
+                <option value="roblox">Itens Gerais Roblox</option>
+            </select>
+            <input id="nome" placeholder="Nome do Item">
+            <input id="preco" placeholder="Preço (ex: 15.00)">
+            <input id="foto" placeholder="Link da Imagem (URL)">
+            <select id="status">
+                <option value="disponivel">🟢 Disponível</option>
+                <option value="esgotado">🔴 Esgotado</option>
+            </select>
+            <button onclick="salvar()" style="background:#43b581; color:white;">Adicionar Produto</button>
+        </div>
+
+        <h2>Itens Cadastrados</h2>
+        <div id="lista"></div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -28,20 +63,54 @@
         const config = { apiKey: "AIzaSyBxFR4sBBzGCKzJMNdfOMF4BIzq3rttcys", authDomain: "bl0x-shop.firebaseapp.com", databaseURL: "https://bl0x-shop-default-rtdb.firebaseio.com", projectId: "bl0x-shop", storageBucket: "bl0x-shop.firebasestorage.app", messagingSenderId: "295840974718", appId: "1:295840974718:web:36af692d4d19bc4134552f", measurementId: "G-ETECVVSFRH" };
         const db = getDatabase(initializeApp(config));
 
+        window.verificar = () => {
+            const senha = document.getElementById('admin-pass').value;
+            if(senha === "1234") { 
+                document.getElementById('password-gate').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+            } else {
+                alert("Senha incorreta!");
+            }
+        };
+
         window.salvar = () => {
             const jogo = document.getElementById('jogo').value;
-            push(ref(db, 'produtos/' + jogo), { 
-                nome: document.getElementById('nome').value, preco: document.getElementById('preco').value, 
-                foto: document.getElementById('foto').value, status: document.getElementById('status').value 
-            });
+            const nome = document.getElementById('nome').value;
+            const preco = document.getElementById('preco').value;
+            const foto = document.getElementById('foto').value;
+            const status = document.getElementById('status').value;
+            
+            if(!nome || !preco || !foto) { alert("Preencha todos os campos!"); return; }
+
+            push(ref(db, 'produtos/' + jogo), { nome, preco, foto, status });
+            alert("Produto adicionado com sucesso!");
         };
-        window.remover = (jogo, id) => { remove(ref(db, 'produtos/' + jogo + '/' + id)); };
+
+        window.remover = (jogo, id) => { 
+            if(confirm("Tem certeza que deseja apagar este item?")) {
+                remove(ref(db, 'produtos/' + jogo + '/' + id)); 
+            }
+        };
 
         onValue(ref(db, 'produtos/'), (snap) => {
-            const data = snap.val(); const l = document.getElementById('lista'); l.innerHTML = "";
+            const data = snap.val(); 
+            const l = document.getElementById('lista'); 
+            l.innerHTML = "";
+            if(!data) { l.innerHTML = "<p style='text-align:center'>Nenhum produto cadastrado.</p>"; return; }
+            
             for(let jogo in data) {
                 for(let id in data[jogo]) {
-                    l.innerHTML += `<div class="item-list">${data[jogo][id].nome} - ${data[jogo][id].status} <button style="background:#e74c3c; width:auto" onclick="remover('${jogo}','${id}')">X</button></div>`;
+                    let item = data[jogo][id];
+                    let sts = item.status === 'esgotado' ? '🔴 Esgotado' : '🟢 Disponível';
+                    l.innerHTML += `
+                        <div class="item-list">
+                            <img src="${item.foto}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 2px solid #000;">
+                            <div style="flex: 1; margin: 0 15px; text-align: left;">
+                                <span>${item.nome} (${jogo.toUpperCase()})</span><br>
+                                <small style="color:#aaa">${sts}</small>
+                            </div>
+                            <button class="btn-del" onclick="remover('${jogo}','${id}')">APAGAR</button>
+                        </div>`;
                 }
             }
         });
