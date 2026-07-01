@@ -2,44 +2,48 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>BLOX Adm</title>
+    <title>BL0X Admin</title>
+    <style>
+        body { background: #1a1a1a; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
+        input { padding: 10px; margin: 10px; border-radius: 5px; border: none; width: 250px; }
+        button { padding: 10px 20px; background: #00d26a; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    </style>
 </head>
-<body style="background:#1a1a1a; color:white; font-family:sans-serif; text-align:center;">
-    <h1>Painel de Administração</h1>
-    <input type="text" id="item-nome" placeholder="Nome do Item"><br>
-    <input type="number" id="item-preco" placeholder="Preço R$"><br>
-    <input type="file" id="item-imagem"><br>
-    <button onclick="salvarItem()">Salvar no Firebase</button>
+<body>
+    <h1>Administração</h1>
+    <input type="text" id="nome" placeholder="Nome do Item"><br>
+    <input type="text" id="preco" placeholder="Preço (Ex: 50.00)"><br>
+    <button onclick="salvar()">Salvar Produto na Nuvem</button>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBxFR4sBBzGCKzJMNdfOMF4BIzq3rttcys",
             authDomain: "bl0x-shop.firebaseapp.com",
+            databaseURL: "https://bl0x-shop-default-rtdb.firebaseio.com",
             projectId: "bl0x-shop",
             storageBucket: "bl0x-shop.firebasestorage.app",
             messagingSenderId: "295840974718",
-            appId: "1:295840974718:web:36af692d4d19bc4134552f",
-            measurementId: "G-ETECVVSFRH"
+            appId: "1:295840974718:web:36af692d4d19bc4134552f"
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const db = getDatabase(app);
 
-        window.salvarItem = async () => {
-            const file = document.getElementById('item-imagem').files[0];
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                await addDoc(collection(db, "produtos"), {
-                    nome: document.getElementById('item-nome').value,
-                    preco: document.getElementById('item-preco').value,
-                    imagem: e.target.result
-                });
-                alert("Item adicionado com sucesso!");
-            };
-            reader.readAsDataURL(file);
+        window.salvar = () => {
+            const nome = document.getElementById('nome').value;
+            const preco = document.getElementById('preco').value;
+            
+            if(nome && preco) {
+                push(ref(db, 'produtos/'), { nome, preco });
+                alert("Produto enviado para a nuvem!");
+                document.getElementById('nome').value = "";
+                document.getElementById('preco').value = "";
+            } else {
+                alert("Preencha todos os campos!");
+            }
         };
     </script>
 </body>
