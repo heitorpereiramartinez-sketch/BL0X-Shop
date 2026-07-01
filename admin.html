@@ -2,145 +2,45 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLOX Shop - Administração</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background: repeating-linear-gradient(45deg, #1a1a1a, #1a1a1a 20px, #242424 20px, #242424 40px);
-            color: #ffffff;
-        }
-        .top-bar {
-            background-color: #0d0d0d;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            border-bottom: 2px solid #00d26a;
-            font-size: 14px;
-        }
-        .top-bar span { cursor: pointer; }
-        .header { text-align: center; padding: 30px 20px; background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.2)); }
-        .header h1 { font-size: 4em; margin: 0; color: #fff; text-shadow: 3px 3px 0 #000; letter-spacing: 3px; }
-        .container { max-width: 900px; margin: 20px auto; background-color: #1c1c1c; padding: 25px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.6); border: 1px solid #333; }
-        h2, h3 { color: #00d26a; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .form-group { margin-bottom: 15px; }
-        input[type="text"], input[type="password"], input[type="number"], select { width: 100%; padding: 12px; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; box-sizing: border-box; }
-        .file-upload { background: #2a2a2a; padding: 15px; border: 2px dashed #00d26a; text-align: center; border-radius: 6px; margin-bottom: 15px; }
-        button { background-color: #00d26a; color: #000; font-weight: bold; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; }
-        .btn-danger { background-color: #ff4c4c; color: white; }
-        .btn-small { width: auto; padding: 8px 15px; font-size: 14px; }
-        #form-solicitar, #dashboard, #panel-dono { display: none; }
-        .list-item { background: #2a2a2a; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #00d26a; }
-        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
-        .card-produto { background: #2a2a2a; padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #444; }
-        .card-produto img { width: 100%; height: 150px; object-fit: contain; background: #1a1a1a; border-radius: 8px; margin-bottom: 10px; }
-        .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 5px; }
-        .status-em-estoque { background: rgba(0, 210, 106, 0.2); color: #00ff80; }
-        .status-esgotado { background: rgba(255, 76, 76, 0.2); color: #ff4c4c; }
-    </style>
+    <title>BLOX Shop - Painel Admin</title>
 </head>
-<body>
-    <div class="top-bar">
-        <span>Home</span> | <span>Adicionar Item</span> | <span onclick="sair()" style="color: #ff4c4c;">Sair</span>
-    </div>
-    <div class="header"><h1>BLOX Shop</h1></div>
-    <div class="container" id="login-section">
-        <h2>Área Restrita (Staff)</h2>
-        <div class="form-group"><input type="text" id="login-user" placeholder="Usuário"></div>
-        <div class="form-group"><input type="password" id="login-pass" placeholder="Senha"></div>
-        <button onclick="fazerLogin()">Fazer Login</button>
-        <p style="text-align: center; margin-top: 20px; font-size: 14px;">Não é staff? <span style="color: #00d26a; cursor: pointer; text-decoration: underline;" onclick="mostrarSolicitacao()">Solicitar permissão de Admin</span></p>
-    </div>
-    <div class="container" id="form-solicitar">
-        <h2>Solicitar Permissão</h2>
-        <div class="form-group"><input type="text" id="novo-user" placeholder="Crie um Usuário"></div>
-        <div class="form-group"><input type="password" id="novo-pass" placeholder="Crie uma Senha"></div>
-        <button onclick="solicitarAdmin()">Enviar Solicitação</button>
-        <button class="btn-danger" style="margin-top: 10px;" onclick="voltarLogin()">Voltar</button>
-    </div>
-    <div class="container" id="dashboard">
-        <h2 id="welcome-msg" style="color: white; border-bottom: none;">Bem-vindo!</h2>
-        <div id="panel-dono" style="background: #1f1a00; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #ffd700;">
-            <h3 style="color: #ffd700; border-bottom-color: #4a4000;">👑 Painel do Dono</h3>
-            <div id="lista-solicitacoes"></div>
-        </div>
-        <h3>📦 Adicionar Novo Item</h3>
-        <div class="form-group"><input type="text" id="item-nome" placeholder="Nome do Item"></div>
-        <div class="form-group"><input type="number" id="item-preco" placeholder="Preço em R$" step="0.01"></div>
-        <div class="file-upload"><input type="file" id="item-imagem" accept="image/*"></div>
-        <div class="form-group"><select id="item-status"><option>Em estoque</option><option>Esgotado</option></select></div>
-        <button onclick="adicionarItem()">Adicionar Item</button>
-        <h3>🛒 Itens na Loja</h3>
-        <div class="vitrine" id="vitrine-itens"></div>
-    </div>
-    <script>
-        const DONO_USER = "BL0xXer";
-        const DONO_PASS = "20141010";
-        if (!localStorage.getItem('admins')) localStorage.setItem('admins', JSON.stringify([]));
-        if (!localStorage.getItem('itensLoja')) localStorage.setItem('itensLoja', JSON.stringify([]));
-        function fazerLogin() {
-            let user = document.getElementById('login-user').value;
-            let pass = document.getElementById('login-pass').value;
-            if (user === DONO_USER && pass === DONO_PASS) { abrirDashboard(true, user); return; }
-            let admins = JSON.parse(localStorage.getItem('admins'));
-            let admin = admins.find(a => a.user === user && a.pass === pass);
-            if (admin && admin.aprovado) { abrirDashboard(false, user); } else { alert("Acesso negado ou não aprovado."); }
-        }
-        function abrirDashboard(isDono, user) {
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            document.getElementById('welcome-msg').innerText = `Bem-vindo, ${user}!`;
-            if (isDono) { document.getElementById('panel-dono').style.display = 'block'; carregarSolicitacoes(); }
-            carregarItens();
-        }
-        function solicitarAdmin() {
-            let user = document.getElementById('novo-user').value;
-            let pass = document.getElementById('novo-pass').value;
-            let admins = JSON.parse(localStorage.getItem('admins'));
-            admins.push({ user, pass, aprovado: false });
-            localStorage.setItem('admins', JSON.stringify(admins));
-            alert("Solicitado!"); voltarLogin();
-        }
-        function carregarSolicitacoes() {
-            let admins = JSON.parse(localStorage.getItem('admins'));
-            let pendentes = admins.filter(a => !a.aprovado);
-            let div = document.getElementById('lista-solicitacoes');
-            div.innerHTML = pendentes.map(a => `<div class="list-item"><span>${a.user}</span><button class="btn-small" onclick="aprovarAdmin('${a.user}')">Aprovar</button></div>`).join('');
-        }
-        function aprovarAdmin(u) {
-            let admins = JSON.parse(localStorage.getItem('admins'));
-            admins.find(a => a.user === u).aprovado = true;
-            localStorage.setItem('admins', JSON.stringify(admins));
-            carregarSolicitacoes();
-        }
-        function adicionarItem() {
-            let nome = document.getElementById('item-nome').value;
-            let preco = document.getElementById('item-preco').value;
-            let status = document.getElementById('item-status').value;
-            let file = document.getElementById('item-imagem').files[0];
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                let itens = JSON.parse(localStorage.getItem('itensLoja'));
-                itens.push({ id: Date.now(), nome, preco, status, imagem: e.target.result });
-                localStorage.setItem('itensLoja', JSON.stringify(itens));
-                carregarItens();
+<body style="background:#1a1a1a; color:white; font-family:sans-serif; text-align:center;">
+    <h1>Painel de Administração</h1>
+    <input type="text" id="item-nome" placeholder="Nome do Item"><br>
+    <input type="number" id="item-preco" placeholder="Preço R$"><br>
+    <input type="file" id="item-imagem"><br>
+    <button onclick="salvarItem()">Salvar no Firebase</button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBxFR4sBBzGCKzJMNdfOMF4BIzq3rttcys",
+            authDomain: "bl0x-shop.firebaseapp.com",
+            projectId: "bl0x-shop",
+            storageBucket: "bl0x-shop.firebasestorage.app",
+            messagingSenderId: "295840974718",
+            appId: "1:295840974718:web:36af692d4d19bc4134552f",
+            measurementId: "G-ETECVVSFRH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.salvarItem = async () => {
+            const file = document.getElementById('item-imagem').files[0];
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                await addDoc(collection(db, "produtos"), {
+                    nome: document.getElementById('item-nome').value,
+                    preco: document.getElementById('item-preco').value,
+                    imagem: e.target.result
+                });
+                alert("Item adicionado com sucesso!");
             };
             reader.readAsDataURL(file);
-        }
-        function carregarItens() {
-            let itens = JSON.parse(localStorage.getItem('itensLoja'));
-            document.getElementById('vitrine-itens').innerHTML = itens.map(i => `<div class="card-produto"><img src="${i.imagem}"><h4>${i.nome}</h4><p>R$ ${i.preco}</p><span class="status-badge ${i.status === 'Em estoque' ? 'status-em-estoque' : 'status-esgotado'}">${i.status}</span><br><button class="btn-danger btn-small" onclick="deletarItem(${i.id})">Remover</button></div>`).join('');
-        }
-        function deletarItem(id) {
-            let itens = JSON.parse(localStorage.getItem('itensLoja')).filter(i => i.id !== id);
-            localStorage.setItem('itensLoja', JSON.stringify(itens));
-            carregarItens();
-        }
-        function mostrarSolicitacao() { document.getElementById('login-section').style.display = 'none'; document.getElementById('form-solicitar').style.display = 'block'; }
-        function voltarLogin() { document.getElementById('form-solicitar').style.display = 'none'; document.getElementById('login-section').style.display = 'block'; }
-        function sair() { location.reload(); }
+        };
     </script>
 </body>
 </html>
