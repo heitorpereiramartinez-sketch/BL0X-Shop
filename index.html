@@ -33,19 +33,20 @@
         onValue(ref(db, 'produtos/'), (snapshot) => {
             const data = snapshot.val();
             const div = document.getElementById('vitrine');
-            div.innerHTML = "";
+    
+            console.log("Dados recebidos:", data); 
 
+            div.innerHTML = ""; 
             if (data) {
                 for (let id in data) {
                     div.innerHTML += `
                         <div class="card">
                             <h3>${data[id].nome}</h3>
                             <p>Preço: R$ ${data[id].preco}</p>
-                            <button>Comprar</button>
                         </div>`;
                 }
             } else {
-                div.innerHTML = "<p>Nenhum produto cadastrado ainda.</p>";
+                div.innerHTML = "<p>O banco de dados está vazio ou inacessível.</p>";
             }
         });
     </script>
