@@ -2,28 +2,36 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>BLOX Shop</title>
+    <title>BL0X Shop</title>
     <style>
-        body { background: #0f0f0f; color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; text-align: center; }
-        .nav { background: #1a1a1a; padding: 20px; border-radius: 12px; display: inline-block; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        button { background: #333; color: white; border: none; padding: 12px 25px; margin: 5px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #7289da; }
-        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; max-width: 1000px; margin: 0 auto; }
-        .card { background: #1a1a1a; padding: 20px; border-radius: 15px; border: 1px solid #333; transition: 0.3s; }
-        .card:hover { transform: translateY(-10px); border-color: #7289da; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .card img { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; }
-        .btn-comp { background: #7289da; display: block; padding: 12px; color: white; text-decoration: none; border-radius: 8px; margin-top: 15px; }
+        :root { --primary: #7289da; --bg: #0f0f0f; --card: #1a1a1a; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; text-align: center; }
+        header { padding: 40px 0; border-bottom: 1px solid #333; margin-bottom: 30px; }
+        .nav-games { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
+        .nav-games button { background: #222; border: 1px solid #444; color: #fff; padding: 12px 30px; border-radius: 50px; cursor: pointer; transition: 0.3s; }
+        .nav-games button:hover { background: var(--primary); border-color: var(--primary); }
+        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 30px; max-width: 1100px; margin: 0 auto; }
+        .card { background: var(--card); border-radius: 20px; padding: 15px; border: 1px solid #333; transition: 0.4s; text-align: left; }
+        .card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 15px; }
+        .card h3 { margin: 15px 0 5px 0; }
+        .card p { color: #00d26a; font-weight: bold; font-size: 1.2em; }
+        .btn-comp { background: var(--primary); display: block; text-align: center; padding: 12px; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; margin-top: 15px; }
     </style>
 </head>
 <body>
 
-    <div class="nav">
-        <button onclick="carregar('roblox')">Roblox</button>
-        <button onclick="carregar('gag2')">Grow a Garden 2</button>
-        <button onclick="window.open('https://discord.gg/SEU_LINK', '_blank')">Suporte</button>
+    <header>
+        <h1>BL0X SHOP</h1>
+        <p>Os melhores itens pelo melhor preço!</p>
+    </header>
+
+    <div class="nav-games">
+        <button onclick="carregar('gag2')">Grow a Garden 2 </button>
+        <button onclick="window.open('https://discord.gg/e3BFTcgw5U', '_blank')">Suporte</button>
     </div>
 
-    <div id="vitrine" class="vitrine"><h2>Escolha um jogo acima para começar</h2></div>
+    <div id="vitrine" class="vitrine"><h2>Selecione um jogo acima</h2></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -34,6 +42,33 @@
             authDomain: "bl0x-shop.firebaseapp.com",
             databaseURL: "https://bl0x-shop-default-rtdb.firebaseio.com",
             projectId: "bl0x-shop",
+            storageBucket: "bl0x-shop.firebasestorage.app",
+            messagingSenderId: "295840974718",
+            appId: "1:295840974718:web:36af692d4d19bc4134552f"
+        };
+        const db = getDatabase(initializeApp(firebaseConfig));
+
+        window.carregar = (jogo) => {
+            const vitrine = document.getElementById('vitrine');
+            vitrine.innerHTML = "<h2>Carregando...</h2>";
+            onValue(ref(db, 'produtos/' + jogo + '/'), (snap) => {
+                const data = snap.val();
+                vitrine.innerHTML = "";
+                if(!data) vitrine.innerHTML = "<h3>Nenhum item cadastrado.</h3>";
+                for(let id in data) {
+                    vitrine.innerHTML += `
+                        <div class="card">
+                            <img src="${data[id].foto}">
+                            <h3>${data[id].nome}</h3>
+                            <p>R$ ${data[id].preco}</p>
+                            <a href="https://discord.gg/SEU_LINK" class="btn-comp">Comprar</a>
+                        </div>`;
+                }
+            });
+        };
+    </script>
+</body>
+</html>
             storageBucket: "bl0x-shop.firebasestorage.app",
             messagingSenderId: "295840974718",
             appId: "1:295840974718:web:36af692d4d19bc4134552f"
