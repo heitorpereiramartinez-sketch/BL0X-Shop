@@ -4,14 +4,18 @@
     <meta charset="UTF-8">
     <title>BL0X Shop</title>
     <style>
-        body { background: #121212; color: white; font-family: sans-serif; text-align: center; }
-        .vitrine { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; }
-        .card { background: #2a2a2a; padding: 20px; border-radius: 10px; width: 200px; border: 1px solid #444; }
+        body { background: #0f0f0f; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; padding: 40px; }
+        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 30px; max-width: 1000px; margin: 30px auto; }
+        .card { background: #1a1a1a; padding: 25px; border-radius: 15px; border: 1px solid #333; transition: 0.3s; }
+        .card:hover { transform: translateY(-10px); border-color: #7289da; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .preco { color: #00d26a; font-weight: bold; font-size: 1.2em; margin: 15px 0; }
+        .btn-discord { background: #7289da; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; text-decoration: none; display: inline-block; font-weight: bold; }
+        .btn-discord:hover { background: #5b6eae; }
     </style>
 </head>
 <body>
     <h1>BL0X Shop</h1>
-    <div id="vitrine" class="vitrine">Carregando produtos...</div>
+    <div id="vitrine" class="vitrine">Carregando itens...</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -30,21 +34,23 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        const LINK_DISCORD = "https://discord.gg/e3BFTcgw5U";
+
         onValue(ref(db, 'produtos/'), (snapshot) => {
             const data = snapshot.val();
             const div = document.getElementById('vitrine');
-
-            div.innerHTML = ""; 
+            div.innerHTML = "";
             if (data) {
                 for (let id in data) {
                     div.innerHTML += `
                         <div class="card">
                             <h3>${data[id].nome}</h3>
-                            <p>Preço: R$ ${data[id].preco}</p>
+                            <p class="preco">R$ ${data[id].preco}</p>
+                            <a href="${LINK_DISCORD}" target="_blank" class="btn-discord">Comprar no Discord</a>
                         </div>`;
                 }
             } else {
-                div.innerHTML = "<p>O banco de dados está vazio ou inacessível.</p>";
+                div.innerHTML = "<p>Nenhum produto no momento.</p>";
             }
         });
     </script>
