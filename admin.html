@@ -4,48 +4,47 @@
     <meta charset="UTF-8">
     <title>BL0X Admin</title>
     <style>
-        body { background:#121212; color:white; padding:40px; text-align:center; }
-        .box { background:#1a1a1a; padding:20px; display:inline-block; border-radius:15px; }
-        input, select, button { width: 300px; padding: 10px; margin: 5px; border-radius: 5px; border: none; }
+        body { background: #0f0f0f; color: white; font-family: sans-serif; padding: 20px; }
+        .box { background: #1a1a1a; padding: 20px; border-radius: 15px; max-width: 400px; margin: 0 auto; }
+        input, select, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: none; }
+        button { background: #4a90e2; color: white; cursor: pointer; }
+        .item-list { background: #222; padding: 10px; margin: 10px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
+    <h2 style="text-align:center">BL0X Admin</h2>
     <div class="box">
-        <select id="jogo"><option value="gag2">Grow a Garden 2</option></select>
+        <select id="jogo"><option value="gag2">GAG 2</option><option value="roblox">Roblox</option></select>
         <input id="nome" placeholder="Nome do Item"><input id="preco" placeholder="Preço">
-        <input id="qtd" placeholder="Quantidade"><input id="foto" placeholder="Link da Foto">
-        <select id="status"><option value="disponivel">Disponível</option><option value="esgotado">Esgotado</option></select>
+        <input id="foto" placeholder="Link da Imagem"><select id="status"><option value="disponivel">Disponível</option><option value="esgotado">Esgotado</option></select>
         <button onclick="salvar()">Adicionar Produto</button>
     </div>
-    <div id="lista"></div>
+    <div id="lista" style="max-width: 500px; margin: 20px auto;"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         
-        const firebaseConfig = {
-          apiKey: "AIzaSyBxFR4sBBzGCKzJMNdfOMF4BIzq3rttcys",
-          authDomain: "bl0x-shop.firebaseapp.com",
-          databaseURL: "https://bl0x-shop-default-rtdb.firebaseio.com",
-          projectId: "bl0x-shop",
-          storageBucket: "bl0x-shop.firebasestorage.app",
-          messagingSenderId: "295840974718",
-          appId: "1:295840974718:web:36af692d4d19bc4134552f",
-          measurementId: "G-ETECVVSFRH"
-        };
-        const db = getDatabase(initializeApp(firebaseConfig));
+        const config = { apiKey: "AIzaSyBxFR4sBBzGCKzJMNdfOMF4BIzq3rttcys", authDomain: "bl0x-shop.firebaseapp.com", databaseURL: "https://bl0x-shop-default-rtdb.firebaseio.com", projectId: "bl0x-shop", storageBucket: "bl0x-shop.firebasestorage.app", messagingSenderId: "295840974718", appId: "1:295840974718:web:36af692d4d19bc4134552f", measurementId: "G-ETECVVSFRH" };
+        const db = getDatabase(initializeApp(config));
 
         window.salvar = () => {
             const jogo = document.getElementById('jogo').value;
-            push(ref(db, 'produtos/' + jogo), {
-                nome: document.getElementById('nome').value,
-                preco: document.getElementById('preco').value,
-                qtd: document.getElementById('qtd').value,
-                foto: document.getElementById('foto').value,
-                status: document.getElementById('status').value
+            push(ref(db, 'produtos/' + jogo), { 
+                nome: document.getElementById('nome').value, preco: document.getElementById('preco').value, 
+                foto: document.getElementById('foto').value, status: document.getElementById('status').value 
             });
-            alert("Salvo!");
         };
+        window.remover = (jogo, id) => { remove(ref(db, 'produtos/' + jogo + '/' + id)); };
+
+        onValue(ref(db, 'produtos/'), (snap) => {
+            const data = snap.val(); const l = document.getElementById('lista'); l.innerHTML = "";
+            for(let jogo in data) {
+                for(let id in data[jogo]) {
+                    l.innerHTML += `<div class="item-list">${data[jogo][id].nome} - ${data[jogo][id].status} <button style="background:#e74c3c; width:auto" onclick="remover('${jogo}','${id}')">X</button></div>`;
+                }
+            }
+        });
     </script>
 </body>
 </html>
