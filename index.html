@@ -33,8 +33,6 @@
         onValue(ref(db, 'produtos/'), (snapshot) => {
             const data = snapshot.val();
             const div = document.getElementById('vitrine');
-    
-            console.log("Dados recebidos:", data); 
 
             div.innerHTML = ""; 
             if (data) {
