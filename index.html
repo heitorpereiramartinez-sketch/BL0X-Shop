@@ -4,33 +4,78 @@
     <meta charset="UTF-8">
     <title>BL0X Shop</title>
     <style>
-        :root { --bg: #0f0f0f; --card: #1a1a1a; --accent: #4a90e2; --text: #ffffff; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; text-align: center; }
-        header { padding: 40px; background: #000; border-bottom: 2px solid #333; }
-        .logo { width: 250px; }
-        nav { margin: 20px 0; }
-        .btn { background: #333; color: white; padding: 12px 25px; border-radius: 50px; border: none; cursor: pointer; margin: 5px; transition: 0.3s; font-weight: bold; }
-        .btn:hover { background: var(--accent); }
-        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-        .card { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid #333; position: relative; transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .esgotado { opacity: 0.6; filter: grayscale(1); cursor: not-allowed; }
-        .tag-esgotado { background: #e74c3c; padding: 5px 10px; border-radius: 5px; font-size: 12px; position: absolute; top: 10px; right: 10px; }
-        .btn-comprar { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 15px; font-weight: bold; }
+        :root { 
+            --c1: #2a2a2a; 
+            --c2: #1e1e1e; 
+            --accent: #fff; 
+            --text-dark: #000;
+        }
+        body { 
+            background: repeating-linear-gradient(45deg, var(--c1), var(--c1) 40px, var(--c2) 40px, var(--c2) 80px);
+            color: #fff; 
+            font-family: 'Arial Black', Impact, sans-serif; 
+            margin: 0; padding: 0; text-align: center; 
+            min-height: 100vh;
+        }
+        header { 
+            background: rgba(15, 15, 15, 0.95); 
+            padding: 30px; border-bottom: 4px solid #000; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        .logo { width: 280px; filter: drop-shadow(0px 5px 0px #000); }
+        .auth-bar { background: #000; padding: 10px; font-family: 'Segoe UI', sans-serif; font-weight: bold; }
+        .auth-bar a, .auth-bar span { color: #aaa; text-decoration: none; }
+        .auth-bar button { background: #e74c3c; border: none; color: white; padding: 5px 15px; border-radius: 5px; cursor: pointer; margin-left: 10px; font-weight: bold; }
+        
+        nav { margin: 30px 0; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .btn { 
+            background: var(--accent); color: var(--text-dark); 
+            padding: 15px 30px; border-radius: 12px; 
+            border: 4px solid #000; cursor: pointer; 
+            font-size: 16px; font-family: 'Arial Black', sans-serif; 
+            text-transform: uppercase; transition: 0.2s; 
+            box-shadow: 0 6px 0px #000;
+        }
+        .btn:hover { transform: translateY(4px); box-shadow: 0 2px 0px #000; }
+        .btn-suporte { background: #5865F2; color: #fff; }
+
+        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        .card { 
+            background: #111; padding: 20px; border-radius: 20px; 
+            border: 4px solid #000; position: relative; 
+            transition: 0.3s; font-family: 'Segoe UI', sans-serif;
+            box-shadow: 0 10px 0px rgba(0,0,0,0.8);
+        }
+        .card h3 { font-family: 'Arial Black', sans-serif; font-size: 1.2em; text-transform: uppercase; letter-spacing: 1px; }
+        .card p { color: #43b581; font-weight: bold; font-size: 1.3em; }
+        
+        .esgotado { opacity: 0.6; filter: grayscale(1); border-color: #555; box-shadow: 0 10px 0px #333; }
+        .tag-esgotado { background: #e74c3c; color: white; padding: 8px 12px; border-radius: 8px; font-size: 14px; position: absolute; top: 10px; right: 10px; font-family: 'Arial Black', sans-serif; border: 2px solid #000; }
+        
+        .btn-comprar { 
+            background: #43b581; color: white; border: 3px solid #000; 
+            padding: 12px; border-radius: 10px; cursor: pointer; 
+            width: 100%; margin-top: 15px; font-weight: bold; font-size: 16px;
+            font-family: 'Arial Black', sans-serif; text-transform: uppercase; transition: 0.2s;
+        }
+        .btn-comprar:hover { background: #3ca374; transform: scale(1.02); }
     </style>
 </head>
 <body>
+
+    <div class="auth-bar" id="auth-area"></div>
+
     <header>
-        <img src="./1001914985.png" class="logo">
+        <img src="./1001914985.png" class="logo" alt="BL0X Shop Logo">
         <nav>
             <button class="btn" onclick="carregar('gag2')">Grow a Garden 2</button>
-            <button class="btn" onclick="carregar('roblox')">Itens Gerais</button>
-            <button class="btn" onclick="window.open('https://discord.gg/e3BFTcgw5U', '_blank')">Suporte</button>
+            <button class="btn btn-suporte" onclick="window.open('https://discord.gg/e3BFTcgw5U', '_blank')">Suporte</button>
         </nav>
-        <div id="auth-area"><a href="login.html" style="color:#888; text-decoration:none;">Minha Conta</a></div>
     </header>
 
-    <div id="vitrine" class="vitrine"></div>
+    <div id="vitrine" class="vitrine">
+        <h2 style="grid-column: 1 / -1; font-family: 'Segoe UI'; background: #111; border: 4px solid #000; padding: 20px; border-radius: 15px;">ESCOLHA UM JOGO ACIMA</h2>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -39,40 +84,43 @@
         const config = { apiKey: "AIzaSyBxFR4sBBzGCKzJMNdfOMF4BIzq3rttcys", authDomain: "bl0x-shop.firebaseapp.com", databaseURL: "https://bl0x-shop-default-rtdb.firebaseio.com", projectId: "bl0x-shop", storageBucket: "bl0x-shop.firebasestorage.app", messagingSenderId: "295840974718", appId: "1:295840974718:web:36af692d4d19bc4134552f", measurementId: "G-ETECVVSFRH" };
         const db = getDatabase(initializeApp(config));
 
+        const user = localStorage.getItem('usuario');
+        const authArea = document.getElementById('auth-area');
+        if(user) {
+            const d = JSON.parse(user);
+            authArea.innerHTML = `<span>Logado como: <b style="color:white">${d.discord}</b></span> <button onclick="sair()">SAIR</button>`;
+        } else {
+            authArea.innerHTML = `<a href="login.html">Fazer Login / Cadastro</a>`;
+        }
+        window.sair = () => { localStorage.removeItem('usuario'); location.reload(); };
+
         window.carregar = (jogo) => {
-            const v = document.getElementById('vitrine'); v.innerHTML = "<h3>Carregando...</h3>";
+            const v = document.getElementById('vitrine'); v.innerHTML = "<h2 style='grid-column: 1/-1;'>CARREGANDO ITENS...</h2>";
             onValue(ref(db, 'produtos/' + jogo), (snap) => {
                 const data = snap.val(); v.innerHTML = "";
+                if(!data) { v.innerHTML = "<h2 style='grid-column: 1/-1;'>Nenhum item cadastrado.</h2>"; return; }
                 for(let id in data) {
                     let item = data[id];
                     let isEsgotado = item.status === 'esgotado';
                     v.innerHTML += `
                         <div class="card ${isEsgotado ? 'esgotado' : ''}">
                             ${isEsgotado ? '<span class="tag-esgotado">ESGOTADO</span>' : ''}
-                            <img src="${item.foto}" style="width:100%; height:150px; border-radius:10px; object-fit:cover;">
+                            <img src="${item.foto}" style="width:100%; height:160px; border-radius:10px; object-fit:cover; border: 2px solid #333;">
                             <h3>${item.nome}</h3>
                             <p>R$ ${item.preco}</p>
-                            <button class="btn-comprar" onclick="comprar('${isEsgotado}')">Comprar</button>
+                            <button class="btn-comprar" onclick="comprar('${isEsgotado}')">COMPRAR</button>
                         </div>`;
                 }
             });
         };
 
         window.comprar = (isEsgotado) => {
-            if(isEsgotado === 'true') { 
-                alert("Este item está esgotado!"); 
-                return; 
-            }
-            
-            const usuarioLogado = localStorage.getItem('usuario');
-    
-            if(!usuarioLogado) {
-                alert("Você precisa estar logado para comprar!");
-                window.location.href = "login.html";
-            } else {
-                const user = JSON.parse(usuarioLogado);
-                alert("Redirecionando para o suporte, " + user.discord + "!");
-                window.open('https://discord.gg/e3BFTcgw5U');
+            if(isEsgotado === 'true') { alert("Este item está esgotado no momento!"); return; }
+            if(!localStorage.getItem('usuario')) { 
+                alert("Você precisa estar logado para comprar!"); 
+                window.location.href = "login.html"; 
+            } else { 
+                window.open('https://discord.gg/e3BFTcgw5U'); 
             }
         };
     </script>
