@@ -4,104 +4,69 @@
     <meta charset="UTF-8">
     <title>BL0X Shop</title>
     <style>
-        :root { --accent: #7289da; --bg: #0f0f0f; }
-        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; text-align: center; }
-        header { padding: 40px; background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%); }
-        .logo { width: 250px; margin-bottom: 20px; }
-        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-        .card { background: #1a1a1a; padding: 20px; border-radius: 20px; border: 1px solid #333; transition: 0.3s; }
-        .card:hover { transform: translateY(-10px); border-color: var(--accent); }
-        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; }
-        .btn { background: var(--accent); padding: 12px 25px; border-radius: 8px; color: white; text-decoration: none; display: block; margin-top: 15px; font-weight: bold; }
+        body { background: #0f0f0f; color: white; font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; padding: 20px; }
+        .logo { width: 220px; margin: 20px 0; }
+        .nav-games { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+        .btn-game { background: #1a1a1a; padding: 15px 30px; border: 1px solid #444; border-radius: 10px; cursor: pointer; color: white; }
+        .btn-game:hover { border-color: #7289da; }
+        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; max-width: 1000px; margin: 0 auto; }
+        .card { background: #1a1a1a; padding: 20px; border-radius: 15px; border: 1px solid #333; }
+        .esgotado { filter: grayscale(1); opacity: 0.6; }
+        .btn-comprar { background: #7289da; border: none; padding: 12px; color: white; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <header>
-        <img src="1001914985.png" class="logo" alt="BL0X Shop Logo">
-        <nav><a href="https://discord.gg/e3BFTcgw5U" style="color:white">Suporte Discord</a></nav>
-    </header>
+    <img src="1001914985.png" class="logo">
+    <div id="auth-area"><a href="login.html" style="color:white">Login / Cadastro</a></div>
+    
+    <div class="nav-games">
+        <button class="btn-game" onclick="carregar('gag2')">Grow a Garden 2</button>
+    </div>
+    <a href="https://discord.gg/e3BFTcgw5U" target="_blank" style="color:#43b581; font-weight:bold;">Suporte no Discord</a>
 
     <div id="vitrine" class="vitrine"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-        const db = getDatabase(initializeApp({ /* SEU CONFIG */ }));
-
-        onValue(ref(db, 'produtos/'), (snap) => {
-            const data = snap.val();
-            const v = document.getElementById('vitrine'); v.innerHTML = "";
-            for(let id in data) {
-                v.innerHTML += `
-                    <div class="card">
-                        <img src="${data[id].foto}">
-                        <h3>${data[id].nome}</h3>
-                        <p>Preço: R$ ${data[id].preco} | Estoque: ${data[id].qtd}</p>
-                        <a href="https://discord.gg/SEU_LINK" class="btn">Comprar no Discord</a>
-                    </div>`;
-            }
-        });
-    </script>
-</body>
-</html>
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
+        
         const firebaseConfig = {
-            apiKey: "AIzaSyBxFR4sBBzGCKzJMNdfOMF4BIzq3rttcys",
-            authDomain: "bl0x-shop.firebaseapp.com",
-            databaseURL: "https://bl0x-shop-default-rtdb.firebaseio.com",
-            projectId: "bl0x-shop",
-            storageBucket: "bl0x-shop.firebasestorage.app",
-            messagingSenderId: "295840974718",
-            appId: "1:295840974718:web:36af692d4d19bc4134552f"
+          apiKey: "AIzaSyBxFR4sBBzGCKzJMNdfOMF4BIzq3rttcys",
+          authDomain: "bl0x-shop.firebaseapp.com",
+          databaseURL: "https://bl0x-shop-default-rtdb.firebaseio.com",
+          projectId: "bl0x-shop",
+          storageBucket: "bl0x-shop.firebasestorage.app",
+          messagingSenderId: "295840974718",
+          appId: "1:295840974718:web:36af692d4d19bc4134552f",
+          measurementId: "G-ETECVVSFRH"
         };
         const db = getDatabase(initializeApp(firebaseConfig));
 
         window.carregar = (jogo) => {
-            const vitrine = document.getElementById('vitrine');
-            vitrine.innerHTML = "<h2>Carregando...</h2>";
-            onValue(ref(db, 'produtos/' + jogo + '/'), (snap) => {
+            onValue(ref(db, 'produtos/' + jogo), (snap) => {
                 const data = snap.val();
-                vitrine.innerHTML = "";
-                if(!data) vitrine.innerHTML = "<h3>Nenhum item cadastrado.</h3>";
+                const v = document.getElementById('vitrine'); v.innerHTML = "";
                 for(let id in data) {
-                    vitrine.innerHTML += `
-                        <div class="card">
-                            <img src="${data[id].foto}">
-                            <h3>${data[id].nome}</h3>
-                            <p>R$ ${data[id].preco}</p>
-                            <a href="https://discord.gg/e3BFTcgw5U" class="btn-comp">Comprar</a>
+                    let item = data[id];
+                    let classe = item.status === 'esgotado' ? 'esgotado' : '';
+                    v.innerHTML += `
+                        <div class="card ${classe}">
+                            <img src="${item.foto}" style="width:100px; border-radius:10px;">
+                            <h3>${item.nome}</h3>
+                            <p>Preço: R$ ${item.preco} | Estoque: ${item.qtd}</p>
+                            <button class="btn-comprar" onclick="comprar()">Comprar</button>
                         </div>`;
                 }
             });
         };
-    </script>
-</body>
-</html>
-            storageBucket: "bl0x-shop.firebasestorage.app",
-            messagingSenderId: "295840974718",
-            appId: "1:295840974718:web:36af692d4d19bc4134552f"
-        };
-        const db = getDatabase(initializeApp(firebaseConfig));
 
-        window.carregar = (jogo) => {
-            const vitrine = document.getElementById('vitrine');
-            vitrine.innerHTML = "<h2>Carregando...</h2>";
-            onValue(ref(db, 'produtos/' + jogo + '/'), (snap) => {
-                const data = snap.val();
-                vitrine.innerHTML = "";
-                if(!data) vitrine.innerHTML = "<h3>Nenhum item cadastrado aqui.</h3>";
-                for(let id in data) {
-                    vitrine.innerHTML += `
-                        <div class="card">
-                            <img src="${data[id].foto}">
-                            <h3>${data[id].nome}</h3>
-                            <p>R$ ${data[id].preco}</p>
-                            <a href="https://discord.gg/e3BFTcgw5U" class="btn-comp">Comprar</a>
-                        </div>`;
-                }
-            });
+        window.comprar = () => {
+            if(!localStorage.getItem('usuario')) {
+                alert("Login necessário para comprar!");
+                window.location.href = "login.html";
+            } else {
+                window.open('https://discord.gg/e3BFTcgw5U');
+            }
         };
     </script>
 </body>
