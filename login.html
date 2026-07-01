@@ -4,36 +4,41 @@
     <meta charset="UTF-8">
     <title>BL0X Cadastro</title>
     <style>
-        body { background: #0f0f0f; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Segoe UI', sans-serif; margin: 0; }
-        .box { background: #1a1a1a; padding: 40px; border-radius: 20px; text-align: center; border: 1px solid #333; width: 300px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #444; background: #222; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: none; background: #4a90e2; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #357abd; }
+        :root { var(--c1): #2a2a2a; var(--c2): #1e1e1e; }
+        body { background: repeating-linear-gradient(45deg, #2a2a2a, #2a2a2a 40px, #1e1e1e 40px, #1e1e1e 80px); color: white; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        .box { background: #111; padding: 40px; border-radius: 20px; text-align: center; border: 4px solid #000; width: 320px; box-shadow: 0 15px 0px rgba(0,0,0,0.8); }
+        h2 { font-family: 'Arial Black', sans-serif; text-transform: uppercase; letter-spacing: 2px; margin-top: 0; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 10px; border: 3px solid #000; background: #222; color: white; box-sizing: border-box; font-weight: bold; }
+        button { width: 100%; padding: 15px; margin-top: 15px; border-radius: 10px; border: 3px solid #000; background: #fff; color: #000; font-weight: 900; font-family: 'Arial Black', sans-serif; text-transform: uppercase; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 0px #000; }
+        button:hover { transform: translateY(3px); box-shadow: 0 2px 0px #000; }
     </style>
 </head>
 <body>
     <div class="box">
         <h2>BL0X Cadastro</h2>
-        <input id="email" type="email" placeholder="Seu E-mail">
+        <input id="email" type="email" placeholder="E-mail">
+        <input id="roblox" placeholder="Nome no Roblox">
         <input id="discord" placeholder="Usuário do Discord">
         <input id="senha" type="password" placeholder="Senha">
-        <button onclick="logar()">Entrar</button>
+        <button onclick="logar()">Registrar / Entrar</button>
+        <p style="margin-top:20px; font-size:12px; color:#888;">Voltar para a <a href="index.html" style="color:#aaa">Loja</a></p>
     </div>
 
     <script>
         window.logar = () => {
             const user = {
                 email: document.getElementById('email').value,
+                roblox: document.getElementById('roblox').value,
                 discord: document.getElementById('discord').value,
                 senha: document.getElementById('senha').value
             };
             
-            if(user.email && user.discord && user.senha) {
+            if(user.email && user.roblox && user.discord && user.senha) {
                 localStorage.setItem('usuario', JSON.stringify(user));
-                alert("Bem-vindo, " + user.discord + "!");
+                alert("Bem-vindo(a), " + user.roblox + "!");
                 window.location.href = "index.html";
             } else {
-                alert("Preencha todos os campos!");
+                alert("Por favor, preencha todos os campos!");
             }
         };
     </script>
