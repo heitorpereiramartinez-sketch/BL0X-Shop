@@ -2,24 +2,28 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>BLOX Admin</title>
+    <title>Painel Admin</title>
     <style>
-        body { background: #121212; color: white; font-family: sans-serif; padding: 20px; text-align: center; }
-        .box { background: #1a1a1a; padding: 20px; border-radius: 10px; display: inline-block; }
-        input, button { padding: 10px; margin: 5px; border-radius: 5px; border: none; width: 250px; }
-        .item { background: #222; padding: 10px; margin: 10px auto; width: 400px; display: flex; justify-content: space-between; border-radius: 5px; align-items: center; }
+        body { background: #121212; color: white; font-family: sans-serif; text-align: center; padding: 40px; }
+        .box { background: #1a1a1a; padding: 25px; border-radius: 15px; display: inline-block; }
+        input, select, button { display: block; width: 300px; padding: 12px; margin: 10px auto; border-radius: 8px; border: none; }
+        button { background: #7289da; cursor: pointer; color: white; font-weight: bold; }
+        .item { background: #222; padding: 15px; margin: 10px auto; width: 350px; border-radius: 8px; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
-    <h1>Administração</h1>
+    <h1>Painel de Administração</h1>
     <div class="box">
-        <input id="nome" placeholder="Nome do Item"><br>
-        <input id="preco" placeholder="Preço"><br>
-        <input id="foto" placeholder="Link da Foto"><br>
-        <button onclick="salvar()">Adicionar à Loja</button>
+        <select id="jogo">
+            <option value="roblox">Roblox</option>
+            <option value="gag2">Grow a Garden 2</option>
+        </select>
+        <input id="nome" placeholder="Nome do Item">
+        <input id="preco" placeholder="Preço">
+        <input id="foto" placeholder="Link da Imagem">
+        <button onclick="salvar()">Adicionar Item</button>
     </div>
 
-    <h3>Itens Cadastrados:</h3>
     <div id="lista"></div>
 
     <script type="module">
@@ -38,23 +42,23 @@
         const db = getDatabase(initializeApp(firebaseConfig));
 
         window.salvar = () => {
+            const jogo = document.getElementById('jogo').value;
             const nome = document.getElementById('nome').value;
             const preco = document.getElementById('preco').value;
             const foto = document.getElementById('foto').value;
-            if(nome && preco && foto) {
-                push(ref(db, 'produtos/roblox/'), { nome, preco, foto });
-                alert("Item adicionado!");
-            }
+            push(ref(db, 'produtos/' + jogo + '/'), { nome, preco, foto });
         };
 
-        window.remover = (id) => { remove(ref(db, 'produtos/roblox/' + id)); };
+        window.remover = (jogo, id) => { remove(ref(db, 'produtos/' + jogo + '/' + id)); };
 
-        onValue(ref(db, 'produtos/roblox/'), (snap) => {
+        onValue(ref(db, 'produtos/'), (snap) => {
             const data = snap.val();
             const div = document.getElementById('lista');
             div.innerHTML = "";
-            for(let id in data) {
-                div.innerHTML += `<div class="item">${data[id].nome} <button onclick="remover('${id}')">Excluir</button></div>`;
+            for(let jogo in data) {
+                for(let id in data[jogo]) {
+                    div.innerHTML += `<div class="item">${data[jogo][id].nome} <button onclick="remover('${jogo}', '${id}')">X</button></div>`;
+                }
             }
         });
     </script>
