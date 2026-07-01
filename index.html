@@ -59,9 +59,21 @@
         };
 
         window.comprar = (isEsgotado) => {
-            if(isEsgotado === 'true') { alert("Este item está esgotado!"); return; }
-            if(!localStorage.getItem('usuario')) { alert("Login necessário!"); window.location.href = "login.html"; }
-            else { window.open('https://discord.gg/e3BFTcgw5U'); }
+            if(isEsgotado === 'true') { 
+                alert("Este item está esgotado!"); 
+                return; 
+            }
+            
+            const usuarioLogado = localStorage.getItem('usuario');
+    
+            if(!usuarioLogado) {
+                alert("Você precisa estar logado para comprar!");
+                window.location.href = "login.html";
+            } else {
+                const user = JSON.parse(usuarioLogado);
+                alert("Redirecionando para o suporte, " + user.discord + "!");
+                window.open('https://discord.gg/e3BFTcgw5U');
+            }
         };
     </script>
 </body>
