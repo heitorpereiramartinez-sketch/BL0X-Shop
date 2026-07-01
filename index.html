@@ -4,36 +4,46 @@
     <meta charset="UTF-8">
     <title>BL0X Shop</title>
     <style>
-        :root { --primary: #7289da; --bg: #0f0f0f; --card: #1a1a1a; }
-        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; text-align: center; }
-        header { padding: 40px 0; border-bottom: 1px solid #333; margin-bottom: 30px; }
-        .nav-games { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
-        .nav-games button { background: #222; border: 1px solid #444; color: #fff; padding: 12px 30px; border-radius: 50px; cursor: pointer; transition: 0.3s; }
-        .nav-games button:hover { background: var(--primary); border-color: var(--primary); }
-        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 30px; max-width: 1100px; margin: 0 auto; }
-        .card { background: var(--card); border-radius: 20px; padding: 15px; border: 1px solid #333; transition: 0.4s; text-align: left; }
-        .card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 15px; }
-        .card h3 { margin: 15px 0 5px 0; }
-        .card p { color: #00d26a; font-weight: bold; font-size: 1.2em; }
-        .btn-comp { background: var(--primary); display: block; text-align: center; padding: 12px; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; margin-top: 15px; }
+        :root { --accent: #7289da; --bg: #0f0f0f; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; text-align: center; }
+        header { padding: 40px; background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%); }
+        .logo { width: 250px; margin-bottom: 20px; }
+        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        .card { background: #1a1a1a; padding: 20px; border-radius: 20px; border: 1px solid #333; transition: 0.3s; }
+        .card:hover { transform: translateY(-10px); border-color: var(--accent); }
+        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; }
+        .btn { background: var(--accent); padding: 12px 25px; border-radius: 8px; color: white; text-decoration: none; display: block; margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
-
     <header>
-        <h1>BL0X SHOP</h1>
-        <p>Os melhores itens pelo melhor preço!</p>
+        <img src="1001914985.png" class="logo" alt="BL0X Shop Logo">
+        <nav><a href="https://discord.gg/SEU_LINK" style="color:white">Suporte Discord</a></nav>
     </header>
 
-    <div class="nav-games">
-        <button onclick="carregar('gag2')">Grow a Garden 2 </button>
-        <button onclick="window.open('https://discord.gg/e3BFTcgw5U', '_blank')">Suporte</button>
-    </div>
-
-    <div id="vitrine" class="vitrine"><h2>Selecione um jogo acima</h2></div>
+    <div id="vitrine" class="vitrine"></div>
 
     <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        const db = getDatabase(initializeApp({ /* SEU CONFIG */ }));
+
+        onValue(ref(db, 'produtos/'), (snap) => {
+            const data = snap.val();
+            const v = document.getElementById('vitrine'); v.innerHTML = "";
+            for(let id in data) {
+                v.innerHTML += `
+                    <div class="card">
+                        <img src="${data[id].foto}">
+                        <h3>${data[id].nome}</h3>
+                        <p>Preço: R$ ${data[id].preco} | Estoque: ${data[id].qtd}</p>
+                        <a href="https://discord.gg/SEU_LINK" class="btn">Comprar no Discord</a>
+                    </div>`;
+            }
+        });
+    </script>
+</body>
+</html>
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
@@ -61,7 +71,7 @@
                             <img src="${data[id].foto}">
                             <h3>${data[id].nome}</h3>
                             <p>R$ ${data[id].preco}</p>
-                            <a href="https://discord.gg/SEU_LINK" class="btn-comp">Comprar</a>
+                            <a href="https://discord.gg/e3BFTcgw5U" class="btn-comp">Comprar</a>
                         </div>`;
                 }
             });
@@ -88,7 +98,7 @@
                             <img src="${data[id].foto}">
                             <h3>${data[id].nome}</h3>
                             <p>R$ ${data[id].preco}</p>
-                            <a href="https://discord.gg/SEU_LINK" class="btn-comp">Comprar</a>
+                            <a href="https://discord.gg/e3BFTcgw5U" class="btn-comp">Comprar</a>
                         </div>`;
                 }
             });
