@@ -1,21 +1,45 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>BL0X Shop</title>
+    <title>BLOX Shop - Central</title>
     <style>
-        body { background: #0f0f0f; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; padding: 40px; }
-        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 30px; max-width: 1000px; margin: 30px auto; }
-        .card { background: #1a1a1a; padding: 25px; border-radius: 15px; border: 1px solid #333; transition: 0.3s; }
-        .card:hover { transform: translateY(-10px); border-color: #7289da; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .preco { color: #00d26a; font-weight: bold; font-size: 1.2em; margin: 15px 0; }
-        .btn-discord { background: #7289da; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; text-decoration: none; display: inline-block; font-weight: bold; }
-        .btn-discord:hover { background: #5b6eae; }
+        body { background: #0f0f0f; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
+        .aba { display: none; margin-top: 20px; }
+        .ativa { display: block; }
+        .nav { background: #1a1a1a; padding: 15px; border-radius: 10px; display: inline-block; }
+        .nav button { background: #333; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; }
+        .nav button:hover { background: #7289da; }
+        .card { background: #1a1a1a; padding: 20px; border-radius: 10px; display: inline-block; margin: 10px; width: 200px; cursor: pointer; border: 1px solid #444; }
+        .card:hover { border-color: #7289da; }
     </style>
 </head>
 <body>
-    <h1>BL0X Shop</h1>
-    <div id="vitrine" class="vitrine">Carregando itens...</div>
+
+    <div class="nav">
+        <button onclick="mostrar('inicio')">Início</button>
+        <button onclick="mostrar('admin')">Admin</button>
+        <button onclick="window.open('https://discord.gg/SEU_LINK', '_blank')">Suporte Discord</button>
+    </div>
+
+    <div id="inicio" class="aba ativa">
+        <h1>Escolha o Jogo</h1>
+        <div class="card" onclick="carregarLoja('roblox')"><h3>Roblox</h3></div>
+        <div class="card" onclick="carregarLoja('minecraft')"><h3>Minecraft</h3></div>
+    </div>
+
+    <div id="loja" class="aba">
+        <button onclick="mostrar('inicio')">Voltar</button>
+        <h2 id="nome-jogo">Loja</h2>
+        <div id="vitrine"></div>
+    </div>
+
+    <div id="admin" class="aba">
+        <h1>Login de Admin</h1>
+        <input type="password" id="senha" placeholder="Senha"><br><br>
+        <button onclick="logar()">Entrar</button>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -30,29 +54,36 @@
             messagingSenderId: "295840974718",
             appId: "1:295840974718:web:36af692d4d19bc4134552f"
         };
+        
+        const db = getDatabase(initializeApp(firebaseConfig));
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        window.mostrar = (id) => {
+            document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+            document.getElementById(id).classList.add('ativa');
+        };
 
-        const LINK_DISCORD = "https://discord.gg/e3BFTcgw5U";
-
-        onValue(ref(db, 'produtos/'), (snapshot) => {
-            const data = snapshot.val();
-            const div = document.getElementById('vitrine');
-            div.innerHTML = "";
-            if (data) {
-                for (let id in data) {
-                    div.innerHTML += `
-                        <div class="card">
-                            <h3>${data[id].nome}</h3>
-                            <p class="preco">R$ ${data[id].preco}</p>
-                            <a href="${LINK_DISCORD}" target="_blank" class="btn-discord">Comprar no Discord</a>
-                        </div>`;
+        window.carregarLoja = (jogo) => {
+            mostrar('loja');
+            document.getElementById('nome-jogo').innerText = "Loja de " + jogo;
+            const vitrine = document.getElementById('vitrine');
+            
+            onValue(ref(db, 'produtos/' + jogo), (snapshot) => {
+                const data = snapshot.val();
+                vitrine.innerHTML = "";
+                for(let id in data) {
+                    vitrine.innerHTML += `<div class="card"><h3>${data[id].nome}</h3><p>R$ ${data[id].preco}</p></div>`;
                 }
+            });
+        };
+
+        window.logar = () => {
+            if(document.getElementById('senha').value === "123") {
+                alert("Redirecionando para o Admin...");
+                window.location.href = "admin.html";
             } else {
-                div.innerHTML = "<p>Nenhum produto no momento.</p>";
+                alert("Senha incorreta!");
             }
-        });
+        };
     </script>
 </body>
 </html>
