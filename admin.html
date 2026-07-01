@@ -4,26 +4,24 @@
     <meta charset="UTF-8">
     <title>Painel Admin</title>
     <style>
-        body { background: #121212; color: white; font-family: sans-serif; text-align: center; padding: 40px; }
-        .box { background: #1a1a1a; padding: 25px; border-radius: 15px; display: inline-block; }
-        input, select, button { display: block; width: 300px; padding: 12px; margin: 10px auto; border-radius: 8px; border: none; }
-        button { background: #7289da; cursor: pointer; color: white; font-weight: bold; }
-        .item { background: #222; padding: 15px; margin: 10px auto; width: 350px; border-radius: 8px; display: flex; justify-content: space-between; }
+        body { background: #121212; color: #fff; font-family: sans-serif; padding: 40px; text-align: center; }
+        .box { background: #1a1a1a; padding: 30px; border-radius: 20px; display: inline-block; width: 350px; }
+        input, select, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; box-sizing: border-box; }
+        button { background: #7289da; color: white; font-weight: bold; cursor: pointer; }
+        .item { background: #222; padding: 15px; margin: 10px auto; width: 350px; border-radius: 12px; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
-    <h1>Painel de Administração</h1>
+    <h1>BL0X Admin</h1>
     <div class="box">
         <select id="jogo">
-            <option value="roblox">Roblox</option>
             <option value="gag2">Grow a Garden 2</option>
         </select>
         <input id="nome" placeholder="Nome do Item">
         <input id="preco" placeholder="Preço">
         <input id="foto" placeholder="Link da Imagem">
-        <button onclick="salvar()">Adicionar Item</button>
+        <button onclick="salvar()">Adicionar</button>
     </div>
-
     <div id="lista"></div>
 
     <script type="module">
@@ -57,7 +55,7 @@
             div.innerHTML = "";
             for(let jogo in data) {
                 for(let id in data[jogo]) {
-                    div.innerHTML += `<div class="item">${data[jogo][id].nome} <button onclick="remover('${jogo}', '${id}')">X</button></div>`;
+                    div.innerHTML += `<div class="item">${data[jogo][id].nome} <button onclick="remover('${jogo}', '${id}')" style="width: auto; background:#ff4444">X</button></div>`;
                 }
             }
         });
