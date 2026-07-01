@@ -4,25 +4,31 @@
     <meta charset="UTF-8">
     <title>BL0X Shop</title>
     <style>
-        body { background: #0f0f0f; color: white; font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; padding: 20px; }
-        .logo { width: 220px; margin: 20px 0; }
-        .nav-games { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
-        .btn-game { background: #1a1a1a; padding: 15px 30px; border: 1px solid #444; border-radius: 10px; cursor: pointer; color: white; }
-        .btn-game:hover { border-color: #7289da; }
-        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; max-width: 1000px; margin: 0 auto; }
-        .card { background: #1a1a1a; padding: 20px; border-radius: 15px; border: 1px solid #333; }
-        .esgotado { filter: grayscale(1); opacity: 0.6; }
-        .btn-comprar { background: #7289da; border: none; padding: 12px; color: white; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px; }
+        :root { --bg: #0f0f0f; --card: #1a1a1a; --accent: #4a90e2; --text: #ffffff; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; text-align: center; }
+        header { padding: 40px; background: #000; border-bottom: 2px solid #333; }
+        .logo { width: 250px; }
+        nav { margin: 20px 0; }
+        .btn { background: #333; color: white; padding: 12px 25px; border-radius: 50px; border: none; cursor: pointer; margin: 5px; transition: 0.3s; font-weight: bold; }
+        .btn:hover { background: var(--accent); }
+        .vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        .card { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid #333; position: relative; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .esgotado { opacity: 0.6; filter: grayscale(1); cursor: not-allowed; }
+        .tag-esgotado { background: #e74c3c; padding: 5px 10px; border-radius: 5px; font-size: 12px; position: absolute; top: 10px; right: 10px; }
+        .btn-comprar { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <img src="./1001914985.png" class="Logo" onerror="this.style.display='none'">
-    <div id="auth-area"><a href="login.html" style="color:white">Login / Cadastro</a></div>
-    
-    <div class="nav-games">
-        <button class="btn-game" onclick="carregar('gag2')">Grow a Garden 2</button>
-    </div>
-    <a href="https://discord.gg/e3BFTcgw5U" target="_blank" style="color:#43b581; font-weight:bold;">Suporte no Discord</a>
+    <header>
+        <img src="./1001914985.png" class="logo">
+        <nav>
+            <button class="btn" onclick="carregar('gag2')">Grow a Garden 2</button>
+            <button class="btn" onclick="carregar('roblox')">Itens Gerais</button>
+            <button class="btn" onclick="window.open('https://discord.gg/e3BFTcgw5U', '_blank')">Suporte</button>
+        </nav>
+        <div id="auth-area"><a href="login.html" style="color:#888; text-decoration:none;">Minha Conta</a></div>
+    </header>
 
     <div id="vitrine" class="vitrine"></div>
 
@@ -30,43 +36,32 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         
-        const firebaseConfig = {
-          apiKey: "AIzaSyBxFR4sBBzGCKzJMNdfOMF4BIzq3rttcys",
-          authDomain: "bl0x-shop.firebaseapp.com",
-          databaseURL: "https://bl0x-shop-default-rtdb.firebaseio.com",
-          projectId: "bl0x-shop",
-          storageBucket: "bl0x-shop.firebasestorage.app",
-          messagingSenderId: "295840974718",
-          appId: "1:295840974718:web:36af692d4d19bc4134552f",
-          measurementId: "G-ETECVVSFRH"
-        };
-        const db = getDatabase(initializeApp(firebaseConfig));
+        const config = { apiKey: "AIzaSyBxFR4sBBzGCKzJMNdfOMF4BIzq3rttcys", authDomain: "bl0x-shop.firebaseapp.com", databaseURL: "https://bl0x-shop-default-rtdb.firebaseio.com", projectId: "bl0x-shop", storageBucket: "bl0x-shop.firebasestorage.app", messagingSenderId: "295840974718", appId: "1:295840974718:web:36af692d4d19bc4134552f", measurementId: "G-ETECVVSFRH" };
+        const db = getDatabase(initializeApp(config));
 
         window.carregar = (jogo) => {
+            const v = document.getElementById('vitrine'); v.innerHTML = "<h3>Carregando...</h3>";
             onValue(ref(db, 'produtos/' + jogo), (snap) => {
-                const data = snap.val();
-                const v = document.getElementById('vitrine'); v.innerHTML = "";
+                const data = snap.val(); v.innerHTML = "";
                 for(let id in data) {
                     let item = data[id];
-                    let classe = item.status === 'esgotado' ? 'esgotado' : '';
+                    let isEsgotado = item.status === 'esgotado';
                     v.innerHTML += `
-                        <div class="card ${classe}">
-                            <img src="${item.foto}" style="width:100px; border-radius:10px;">
+                        <div class="card ${isEsgotado ? 'esgotado' : ''}">
+                            ${isEsgotado ? '<span class="tag-esgotado">ESGOTADO</span>' : ''}
+                            <img src="${item.foto}" style="width:100%; height:150px; border-radius:10px; object-fit:cover;">
                             <h3>${item.nome}</h3>
-                            <p>Preço: R$ ${item.preco} | Estoque: ${item.qtd}</p>
-                            <button class="btn-comprar" onclick="comprar()">Comprar</button>
+                            <p>R$ ${item.preco}</p>
+                            <button class="btn-comprar" onclick="comprar('${isEsgotado}')">Comprar</button>
                         </div>`;
                 }
             });
         };
 
-        window.comprar = () => {
-            if(!localStorage.getItem('usuario')) {
-                alert("Cadastro necessário para comprar!");
-                window.location.href = "login.html";
-            } else {
-                window.open('https://discord.gg/e3BFTcgw5U');
-            }
+        window.comprar = (isEsgotado) => {
+            if(isEsgotado === 'true') { alert("Este item está esgotado!"); return; }
+            if(!localStorage.getItem('usuario')) { alert("Login necessário!"); window.location.href = "login.html"; }
+            else { window.open('https://discord.gg/e3BFTcgw5U'); }
         };
     </script>
 </body>
